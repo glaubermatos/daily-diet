@@ -1,10 +1,12 @@
 import { SectionList } from 'react-native';
 
-import { Container, NewMeal, SectionTitle, Title } from './styles';
-import { Header } from '@components/Header';
+import { Container, Header, Logo, NewMeal, SectionTitle, Title } from './styles';
+
 import { Percent } from '@components/Percent';
 import { Button } from '@components/Button';
 import { MealCard } from '@components/MealCard';
+
+import logoImg from '@assets/logo.png'
 
 const DATA = [
   {
@@ -21,7 +23,9 @@ export function Home() {
 
   return (
     <Container>
-      <Header />
+      <Header>
+        <Logo source={logoImg} />
+      </Header>
 
       <Percent
         style={{ marginTop: 32}}

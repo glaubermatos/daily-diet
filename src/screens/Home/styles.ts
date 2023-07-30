@@ -9,6 +9,21 @@ export const Container = styled(SafeAreaView)`
   padding: 24px;
 `;
 
+export const Header = styled.View`
+  width: 100%;
+
+  background-color: ${({theme}) => theme.COLORS.WHITE};
+
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Logo = styled.Image`
+    width: 82px;
+    height: 37px;
+`;
+
 export const NewMeal = styled.View`
   margin-top: 40px;
 

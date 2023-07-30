@@ -1,13 +1,25 @@
 import { Text } from 'react-native';
 
-import { Container, Logo } from './styles';
+import { Container, HeaderTypeStyleProps, Title } from './styles';
+import { BackButton } from '@components/BackButton';
 
-import logoImg from '@assets/logo.png'
+export type HeaderTitleTypeProps = "Nova refeição" | "Refeição" | "Editar refeição";
 
-export function Header() {
+type Props = {
+  title: HeaderTitleTypeProps;
+  type?: HeaderTypeStyleProps;
+} 
+
+export function Header({title, type = "DEFAULT"}: Props) {
   return (
-    <Container>
-      <Logo source={logoImg} />
+    <Container
+      type={type}
+    >
+      <BackButton />
+
+      <Title>
+        {title}
+      </Title>
     </Container>
   );
 }
