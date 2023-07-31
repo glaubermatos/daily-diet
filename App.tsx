@@ -1,7 +1,7 @@
 import { ActivityIndicator, StatusBar} from 'react-native';
 import { Nunito_400Regular, Nunito_700Bold, useFonts } from '@expo-google-fonts/nunito'
 
-import { NewMeal } from '@screens/NewMeal';
+import { Feedback } from '@screens/Feedback';
 
 import { ThemeProvider } from 'styled-components/native';
 import defaultTheme from './src/theme/defaultTheme'
@@ -20,7 +20,7 @@ export default function App() {
         translucent
       />
 
-      {fontsLoaded ? <NewMeal />  : <ActivityIndicator />}
+      {fontsLoaded ? <Feedback />  : <ActivityIndicator />}
     </ThemeProvider>
   );
 }
