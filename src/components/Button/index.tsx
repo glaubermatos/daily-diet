@@ -10,7 +10,7 @@ type Props = TouchableOpacityProps & {
   type?: ButtonTypeStyleProps;
 }
 
-export function Button({text, icon, type = "PRIMARY"}: Props) {
+export function Button({text, icon, type = "PRIMARY", ...rest}: Props) {
   let Icon;
 
   switch (icon) {
@@ -28,9 +28,17 @@ export function Button({text, icon, type = "PRIMARY"}: Props) {
   }
 
   return (
-    <Container type={type}>
-        {Icon}
-        <Label type={type}>{text}</Label>
+    <Container
+      type={type}
+      {...rest}
+    >
+        {icon && Icon}
+
+        <Label
+          type={type}
+        >
+          {text}
+        </Label>
     </Container>
   );
 }

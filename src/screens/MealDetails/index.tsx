@@ -3,6 +3,9 @@ import { Header } from '@components/Header';
 import { Button } from '@components/Button';
 
 import { Actions, Container, Content, Details, Label, MealName, Row, Text } from './styles';
+import { ModalDeleteMeal } from '@components/ModalDeleteMeal';
+import { Modal } from 'react-native';
+import { useState } from 'react';
 
 export type Meal = {
   name: string;
@@ -25,6 +28,15 @@ const meal = {
 }
 
 export function MealDetails({ meal: {name, description, date, time, insideTheDiet} = meal}: Props) {
+  const [modalDeleteMealIsOpen, setModalDeleteMealIsOpen] = useState(false)
+
+  function handleOpenModalDeleteMeal() {
+    setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)
+  }
+
+  function handleCloseModalDeleteMeal() {
+    setModalDeleteMealIsOpen(false)
+  }
 
   return (
     <Container>
@@ -71,9 +83,31 @@ export function MealDetails({ meal: {name, description, date, time, insideTheDie
             icon="delete"
             text="Excluir refeição"
             type="SECONDARY"
+            onPress={() => handleOpenModalDeleteMeal()}
           />
         </Actions>
       </Content>
+
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={modalDeleteMealIsOpen}
+        statusBarTranslucent
+        onRequestClose={() => setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)}
+      >
+        <ModalDeleteMeal>
+          <Button
+            text="Cancelar" 
+            type="SECONDARY"
+            onPress={() => setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)}
+          />
+
+          <Button
+            type="PRIMARY"
+            text="Sim, excluir"
+          />        
+        </ModalDeleteMeal>
+      </Modal>
 
     </Container>
   );

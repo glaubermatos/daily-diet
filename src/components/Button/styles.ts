@@ -1,4 +1,4 @@
-import { ArrowUpRight, PencilSimpleLine, Plus, Trash } from "phosphor-react-native";
+import { PencilSimpleLine, Plus, Trash } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
 import { css, styled } from "styled-components/native";
 
@@ -10,9 +10,8 @@ type Props = {
 
 export const Container = styled(TouchableOpacity)<Props>`
   width: auto;
-  min-height: 50px;
 
-  padding: 0 24px;
+  padding: 16px 24px;
 
   ${({ theme, type }) => css`
     background-color: ${type === "PRIMARY" ? theme.COLORS.GRAY_600 : theme.COLORS.WHITE};

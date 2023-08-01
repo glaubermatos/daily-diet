@@ -1,10 +1,11 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import { css, styled } from "styled-components/native";
 
 export const Container = styled.View`
   flex: 1;
 
   background-color: ${({theme}) => theme.COLORS.WHITE};
+
+  position: relative;
 `;
 
 export const Content = styled.View`
@@ -39,7 +40,7 @@ export const Text = styled.Text`
   ${({ theme }) => css`
     font-size: ${theme.FONT_SIZE.MD}px;
     font-family: ${theme.FONT_FAMILY.REGULAR};
-    color: ${theme.COLORS.GRAY_7600};
+    color: ${theme.COLORS.GRAY_600};
   `}
 `;
 
