@@ -1,14 +1,19 @@
 import { TouchableOpacityProps } from 'react-native';
+
 import { ButtonIconTypeStyleProps, Container, IconArrowLeft } from './styles';
 
 type Props = TouchableOpacityProps & {
   type? : ButtonIconTypeStyleProps
 }
 
-export function BackButton({type = "DEFAULT"}: Props) {
+export function BackButton({type = "DEFAULT", ...rest}: Props) {
   return (
-    <Container>
-      <IconArrowLeft type={type} />
+    <Container
+      {...rest}
+    >
+      <IconArrowLeft
+        type={type}
+      />
     </Container>
   );
 }

@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native'
+
 import { Tag } from '@components/Tag';
 import { Header } from '@components/Header';
 import { Button } from '@components/Button';
@@ -27,8 +29,12 @@ const meal = {
   insideTheDiet: true,
 }
 
-export function MealDetails({ meal: {name, description, date, time, insideTheDiet} = meal}: Props) {
+export function MealDetails() {
+  const navigation = useNavigation()
+  
   const [modalDeleteMealIsOpen, setModalDeleteMealIsOpen] = useState(false)
+
+  const { name, description, date, time, insideTheDiet} = meal
 
   function handleOpenModalDeleteMeal() {
     setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)
@@ -36,6 +42,10 @@ export function MealDetails({ meal: {name, description, date, time, insideTheDie
 
   function handleCloseModalDeleteMeal() {
     setModalDeleteMealIsOpen(false)
+  }
+
+  function handleNavigateToEditMeal() {
+    navigation.navigate('new')
   }
 
   return (
@@ -75,6 +85,7 @@ export function MealDetails({ meal: {name, description, date, time, insideTheDie
         
         <Actions>
           <Button
+            onPress={() => handleNavigateToEditMeal()}
             icon="edit"
             text="Editar refeição"
           />
@@ -93,13 +104,13 @@ export function MealDetails({ meal: {name, description, date, time, insideTheDie
         transparent={true}
         visible={modalDeleteMealIsOpen}
         statusBarTranslucent
-        onRequestClose={() => setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)}
+        onRequestClose={() => handleCloseModalDeleteMeal()}
       >
         <ModalDeleteMeal>
           <Button
             text="Cancelar" 
             type="SECONDARY"
-            onPress={() => setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)}
+            onPress={() => handleCloseModalDeleteMeal()}
           />
 
           <Button

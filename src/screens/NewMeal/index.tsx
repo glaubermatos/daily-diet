@@ -1,4 +1,6 @@
 import {Dimensions} from 'react-native';
+import { useNavigation } from '@react-navigation/native'
+
 import { Input } from '@components/Input';
 import { Container, Content, Form, Row } from './styles';
 import { Header } from '@components/Header';
@@ -6,7 +8,13 @@ import { DietRadioButton } from '@components/DietRadioButton';
 import { Button } from '@components/Button';
 
 export function NewMeal() {
+  const navigation = useNavigation();
+
   const windowWidth = Dimensions.get('window').width;
+
+  function handleCreateNewMeal() {
+    navigation.navigate("feedback");
+  }
 
   return (
     <Container>
@@ -42,6 +50,7 @@ export function NewMeal() {
         </Form>
         
         <Button
+          onPress={handleCreateNewMeal}
           text='Cadastrar refeição'
         />
       </Content>

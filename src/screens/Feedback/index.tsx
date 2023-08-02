@@ -1,4 +1,6 @@
 
+import { useNavigation } from '@react-navigation/native'
+
 import { Highlight } from '@components/Highlight';
 import { Container } from './styles';
 
@@ -8,11 +10,15 @@ import OffTheDietImage    from '@assets/Illustration-2.svg'
 import { Button } from '@components/Button';
 import { View } from 'react-native';
 
-type Props = {
-  insideTheDiet: boolean
-}
+export function Feedback() {
+  const navigation = useNavigation()
 
-export function Feedback({ insideTheDiet = true  }: Props) {
+  const insideTheDiet = false
+
+  function handleNavigationToHome() {
+    navigation.navigate("home")
+  }
+
   return (
     <Container>
       <Highlight
@@ -37,7 +43,8 @@ export function Feedback({ insideTheDiet = true  }: Props) {
           marginTop: 32,
         }}
       >
-        <Button        
+        <Button 
+          onPress={handleNavigationToHome}       
           text="Ir para a página inicial"
         />
       </View>

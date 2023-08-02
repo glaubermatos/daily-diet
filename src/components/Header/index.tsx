@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native'
 
 import { Container, HeaderTypeStyleProps, Title } from './styles';
 import { BackButton } from '@components/BackButton';
@@ -11,15 +11,23 @@ type Props = {
 } 
 
 export function Header({title, type = "DEFAULT"}: Props) {
+  const navigation = useNavigation();
+
+  function handleGoBackHome() {
+    navigation.navigate("home")
+  }
+
   return (
     <Container
       type={type}
     >
-      <BackButton />
+      <BackButton
+        onPress={handleGoBackHome}
+      />
 
       <Title>
         {title}
       </Title>
     </Container>
-  );
+  ); 
 }

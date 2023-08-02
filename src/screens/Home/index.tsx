@@ -1,4 +1,5 @@
 import { SectionList } from 'react-native';
+import { useNavigation } from '@react-navigation/native'
 
 import { Container, Header, Logo, NewMeal, SectionTitle, Title } from './styles';
 
@@ -20,6 +21,19 @@ const DATA = [
 ];
 
 export function Home() {
+  const navigation = useNavigation()
+
+  function handleNavigateToStatistics() {
+    navigation.navigate('statistics')
+  }
+
+  function handleNavigateToNewMeal() {
+    navigation.navigate('new')
+  }
+
+  function handleNavigateMealDetails(id: string) {
+    navigation.navigate("meal", {id})
+  }
 
   return (
     <Container>
@@ -28,6 +42,7 @@ export function Home() {
       </Header>
 
       <Percent
+        onPress={() => handleNavigateToStatistics()}
         style={{ marginTop: 32}}
         value={90.86}
         description="das refeições dentro da dieta"
@@ -39,6 +54,7 @@ export function Home() {
         </Title>
 
         <Button
+          onPress={handleNavigateToNewMeal}
           icon="add"
           text="Nova refeição"
         />
@@ -50,6 +66,7 @@ export function Home() {
         keyExtractor={(item, index) => item.meal + index}
         renderItem={({item}) => (
           <MealCard
+            onPress={() => handleNavigateMealDetails("teste")}
             time={item.time}
             meal={item.meal}
             insideTheDiet={item.insideTheDiet}
