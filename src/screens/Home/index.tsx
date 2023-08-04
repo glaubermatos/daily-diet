@@ -1,5 +1,5 @@
-import { SectionList } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
+import { Alert, SectionList } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 import { Container, Header, Logo, NewMeal, SectionTitle, Title } from './styles';
 
@@ -8,27 +8,107 @@ import { Button } from '@components/Button';
 import { MealCard } from '@components/MealCard';
 
 import logoImg from '@assets/logo.png'
+import { ListEmpty } from '@components/ListEmpty';
+import { useCallback, useState } from 'react';
+import { MealListTypeProps } from 'src/@types/meal';
+import { getAllMeals } from '@storage/meal/getAllMeals';
 
 const DATA = [
   {
-    sectionTitle: '12.08.22',
-    data: [{time: '20:00', meal: 'X-tudo', insideTheDiet: false}, {time: '20:00', meal: 'Whey protein com leite', insideTheDiet: true}, {time: '20:00', meal: 'Salada cesar com frango grelhado', insideTheDiet: true}, {time: '20:00', meal: 'Vitamina de banana com abacate', insideTheDiet: true}],
-  },
-  {
-    sectionTitle: '11.08.22',
-    data: [{time: '20:00', meal: 'X-tudo', insideTheDiet: false}, {time: '20:00', meal: 'Whey protein com leite', insideTheDiet: true}, {time: '20:00', meal: 'Salada cesar com frango grelhado', insideTheDiet: true}, {time: '20:00', meal: 'Vitamina de banana com abacate', insideTheDiet: true}],
+    date: '12.08.22',
+    data: [{
+      time: '20:00', 
+      meal: 'X-tudo', 
+      description: "X-tudo",
+      insideTheDiet: false
+    }, {
+      time: '20:00', 
+      meal: 'Whey protein com leite', 
+      description: "X-tudo",
+      insideTheDiet: true
+    }, {
+      time: '20:00', 
+      meal: 'Salada cesar com frango grelhado', 
+      description: "X-tudo",
+      insideTheDiet: true
+    }, {
+      time: '20:00', 
+      meal: 'Vitamina de banana com abacate',
+      description: "X-tudo", 
+      insideTheDiet: true
+    }],
+  },{
+    date: '11.08.22',
+    data: [{
+      time: '20:00', 
+      meal: 'X-tudo', 
+      description: "X-tudo",
+      insideTheDiet: false,
+    }, {
+      time: '20:00', 
+      meal: 'Whey protein com leite', 
+      description: "X-tudo",
+      insideTheDiet: true
+    }, {
+      time: '20:00', 
+      meal: 'Salada cesar com frango grelhado', 
+      description: "X-tudo",
+      insideTheDiet: true
+    }, {
+      time: '20:00', 
+      meal: 'Vitamina de banana com abacate', 
+      description: "X-tudo",
+      insideTheDiet: true
+    }],
   },
 ];
 
 export function Home() {
+  const [meals, setMeals] = useState<MealListTypeProps[]>([])
+
   const navigation = useNavigation()
+
+  const statisticsInitial = {
+    mealsRegistered: 0,
+    mealsInsideTheDiet: 0,
+    mealsPercentsInsideTheDiet: 0,
+  };
+
+  const statistics = meals.map(day => day).reduce((statisticsInitial, day) => {
+    const mealsRegistered = statisticsInitial.mealsRegistered + day.data.length;
+    const mealsInsideTheDiet = statisticsInitial.mealsInsideTheDiet + day.data.filter(meal => meal.insideTheDiet === true).length
+
+    const mealsPercentsInsideTheDiet = (mealsInsideTheDiet / mealsRegistered) * 100;
+
+    return {
+      mealsRegistered,
+      mealsInsideTheDiet,
+      mealsPercentsInsideTheDiet
+    }
+  }, statisticsInitial)
+
+  useFocusEffect(useCallback(() => {
+    fetchData()
+  }, []))
+
+  async function fetchData() {
+    try {
+      const allMeals = await getAllMeals()
+
+      setMeals(allMeals)
+
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Erro ao carregar os dados')
+    }
+  }
 
   function handleNavigateToStatistics() {
     navigation.navigate('statistics')
   }
 
   function handleNavigateToNewMeal() {
-    navigation.navigate('new')
+    navigation.navigate('new', {})
   }
 
   function handleNavigateMealDetails(id: string) {
@@ -44,7 +124,7 @@ export function Home() {
       <Percent
         onPress={() => handleNavigateToStatistics()}
         style={{ marginTop: 32}}
-        value={90.86}
+        value={statistics.mealsPercentsInsideTheDiet}
         description="das refeições dentro da dieta"
       />
 
@@ -62,24 +142,29 @@ export function Home() {
 
       <SectionList
         style={{ marginTop: 16}}
-        sections={DATA}
-        keyExtractor={(item, index) => item.meal + index}
+        sections={meals}
+        keyExtractor={(item) => item.id}
         renderItem={({item}) => (
           <MealCard
-            onPress={() => handleNavigateMealDetails("teste")}
+            onPress={() => handleNavigateMealDetails(item.id)}
             time={item.time}
             meal={item.meal}
             insideTheDiet={item.insideTheDiet}
           />
         )}
-        renderSectionHeader={({section: {sectionTitle}}) => (
-          <SectionTitle>{sectionTitle}</SectionTitle>
+        renderSectionHeader={({section: {date}}) => (
+          <SectionTitle>{date}</SectionTitle>
         )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           { paddingBottom: 100 },
-          // players.length === 0 && { flex: 1 }
+          meals.length === 0 && { flex: 1 }
         ]}
+        ListEmptyComponent={() => (
+          <ListEmpty
+            message="Que tal cadastrar a primeira refeição?"
+          />
+        )}
       />
     </Container>
   );

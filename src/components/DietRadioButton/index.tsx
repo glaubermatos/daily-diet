@@ -3,7 +3,12 @@ import { Container, DietRadioButtonTypeStyleProps, Label, RadioButton, RadioGrou
 import { useState } from 'react';
 import { Button } from '@components/Button';
 
-export function DietRadioButton() {
+type Props = {
+  insideTheDiet: boolean;
+  onSwitchInsideTheDiet: (insideDiet: boolean) => void;
+}
+
+export function DietRadioButton({insideTheDiet, onSwitchInsideTheDiet}: Props) {
   const windowWidth = Dimensions.get('window').width;
 
   return (
@@ -12,8 +17,9 @@ export function DietRadioButton() {
         
         <RadioGroud>
           <RadioButton
+            onPress={() => onSwitchInsideTheDiet(true)}
             style={{ width: ((windowWidth / 2) - 30)}}
-            isActive={true}
+            isActive={insideTheDiet ? true : false}
             type="PRIMARY"  
           >
             <Status
@@ -26,8 +32,9 @@ export function DietRadioButton() {
           </RadioButton>
 
           <RadioButton
+            onPress={() => onSwitchInsideTheDiet(false)}
             style={{ width: ((windowWidth / 2) - 30)}}
-            isActive={false}
+            isActive={insideTheDiet ? false : true}
             type="SECONDARY"  
           >
             <Status

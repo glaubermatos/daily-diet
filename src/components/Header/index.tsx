@@ -14,7 +14,7 @@ export function Header({title, type = "DEFAULT"}: Props) {
   const navigation = useNavigation();
 
   function handleGoBackHome() {
-    navigation.navigate("home")
+    navigation.goBack()
   }
 
   return (

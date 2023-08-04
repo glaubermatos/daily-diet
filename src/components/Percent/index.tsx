@@ -7,10 +7,20 @@ type Props = TouchableOpacityProps & {
   description: string
 }
 
-const BASE_VALUE = 60; //60%
+const BASE_VALUE = 50; //50%
 
 export function Percent({value, description, ...rest}: Props) {
   const type: PercentTypeStyleProps =  value >= BASE_VALUE ? "PRIMARY" : "SECONDARY";
+
+  var option = {
+    style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  };
+
+  var formatter = new Intl.NumberFormat("pt-BR", option);
+
+  const valuePercent = formatter.format(value/100)
 
   return (
     <Container
@@ -21,8 +31,8 @@ export function Percent({value, description, ...rest}: Props) {
         type={type}
       />
 
-      <Value>{
-        value}%
+      <Value>
+        {valuePercent}
       </Value>
 
       <Description>

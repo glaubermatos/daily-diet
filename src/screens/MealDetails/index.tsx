@@ -1,4 +1,5 @@
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
+import { ActivityIndicator, Alert } from 'react-native';
 
 import { Tag } from '@components/Tag';
 import { Header } from '@components/Header';
@@ -7,7 +8,10 @@ import { Button } from '@components/Button';
 import { Actions, Container, Content, Details, Label, MealName, Row, Text } from './styles';
 import { ModalDeleteMeal } from '@components/ModalDeleteMeal';
 import { Modal } from 'react-native';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { mealGetById } from '@storage/meal/mealGetById';
+import { MealListTypeProps, MealTypeProps } from 'src/@types/meal';
+import { mealDeleteById } from '@storage/meal/delete/mealDeleteById';
 
 export type Meal = {
   name: string;
@@ -29,12 +33,49 @@ const meal = {
   insideTheDiet: true,
 }
 
+type RouteParams = {
+  id: string,
+}
+
+type MealDetailType = {
+  id: string,
+  meal: string,
+  description: string,
+  dateTime: string,
+  insideTheDiet: boolean
+}
+
 export function MealDetails() {
   const navigation = useNavigation()
-  
-  const [modalDeleteMealIsOpen, setModalDeleteMealIsOpen] = useState(false)
 
-  const { name, description, date, time, insideTheDiet} = meal
+  const [meal, setMeal] = useState<MealDetailType>()
+  const [modalDeleteMealIsOpen, setModalDeleteMealIsOpen] = useState(false)
+  
+  const route = useRoute()
+  const { id } = route.params as RouteParams;
+
+  useFocusEffect(useCallback(() => {
+    fetchData()
+  }, [id]))
+
+  async function fetchData() {
+    const stored = await mealGetById(id)
+    const meal = formatMealData(stored)
+
+    setMeal(meal)
+  }
+
+  function formatMealData(stored: MealListTypeProps) {
+    const mealFormatted = {
+      id: stored.data[0].id,
+      meal: stored.data[0].meal,
+      description: stored.data[0].description,
+      dateTime: `${stored.date} às ${stored.data[0].time}`,
+      insideTheDiet: stored.data[0].insideTheDiet
+    }
+
+    return mealFormatted
+  }
 
   function handleOpenModalDeleteMeal() {
     setModalDeleteMealIsOpen(!modalDeleteMealIsOpen)
@@ -45,81 +86,98 @@ export function MealDetails() {
   }
 
   function handleNavigateToEditMeal() {
-    navigation.navigate('new')
+    navigation.navigate('new', {id})
+  }
+
+  async function deleteMeal(id: string) {
+    try {
+      await mealDeleteById(id)
+
+      navigation.navigate('home')
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Excluir refeição", "Não foi possível excluir a refeição")
+    }
   }
 
   return (
     <Container>
-      <Header
-        type={insideTheDiet ? "PRIMARY" : "SECONDARY" }
-        title="Refeição"
-      />
-
-      <Content>
-        <Details>
-          <Row>
-            <MealName>
-              {name}
-            </MealName>
-
-            <Text>
-              {description}
-            </Text>
-          </Row>
-
-          <Row>
-            <Label>
-              Data e hora
-            </Label>
-
-            <Text>
-              {date} às {time}
-            </Text>
-          </Row>
-
-          <Tag
-            insideTheDiet={insideTheDiet}
+      {meal ? (
+        <>
+          <Header
+            type={meal.insideTheDiet ? "PRIMARY" : "SECONDARY" }
+            title="Refeição"
           />
 
-        </Details>
-        
-        <Actions>
-          <Button
-            onPress={() => handleNavigateToEditMeal()}
-            icon="edit"
-            text="Editar refeição"
-          />
-          
-          <Button
-            icon="delete"
-            text="Excluir refeição"
-            type="SECONDARY"
-            onPress={() => handleOpenModalDeleteMeal()}
-          />
-        </Actions>
-      </Content>
+          <Content>
+            <Details>
+              <Row>
+                <MealName>
+                  {meal.meal}
+                </MealName>
 
-      <Modal
-        animationType='slide'
-        transparent={true}
-        visible={modalDeleteMealIsOpen}
-        statusBarTranslucent
-        onRequestClose={() => handleCloseModalDeleteMeal()}
-      >
-        <ModalDeleteMeal>
-          <Button
-            text="Cancelar" 
-            type="SECONDARY"
-            onPress={() => handleCloseModalDeleteMeal()}
-          />
+                <Text>
+                  {meal.description}
+                </Text>
+              </Row>
 
-          <Button
-            type="PRIMARY"
-            text="Sim, excluir"
-          />        
-        </ModalDeleteMeal>
-      </Modal>
+              <Row>
+                <Label>
+                  Data e hora
+                </Label>
 
+                <Text>
+                  {meal.dateTime}
+                </Text>
+              </Row>
+
+              <Tag
+                insideTheDiet={meal.insideTheDiet}
+              />
+
+            </Details>
+            
+            <Actions>
+              <Button
+                onPress={() => handleNavigateToEditMeal()}
+                icon="edit"
+                text="Editar refeição"
+              />
+              
+              <Button
+                icon="delete"
+                text="Excluir refeição"
+                type="SECONDARY"
+                onPress={() => handleOpenModalDeleteMeal()}
+              />
+            </Actions>
+          </Content>
+
+          <Modal
+            animationType='slide'
+            transparent={true}
+            visible={modalDeleteMealIsOpen}
+            statusBarTranslucent
+            onRequestClose={() => handleCloseModalDeleteMeal()}
+          >
+            <ModalDeleteMeal>
+              <Button
+                text="Cancelar" 
+                type="SECONDARY"
+                onPress={() => handleCloseModalDeleteMeal()}
+              />
+
+              <Button
+                onPress={() => deleteMeal(meal.id)}
+                type="PRIMARY"
+                text="Sim, excluir"
+              />        
+            </ModalDeleteMeal>
+          </Modal>
+        </>
+      ) : (
+        <ActivityIndicator />
+      )}
     </Container>
   );
 } 

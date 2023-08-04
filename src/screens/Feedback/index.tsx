@@ -1,5 +1,5 @@
 
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { Highlight } from '@components/Highlight';
 import { Container } from './styles';
@@ -10,10 +10,15 @@ import OffTheDietImage    from '@assets/Illustration-2.svg'
 import { Button } from '@components/Button';
 import { View } from 'react-native';
 
+type RouteParams = {
+  insideTheDiet: boolean,
+}
+
 export function Feedback() {
   const navigation = useNavigation()
-
-  const insideTheDiet = false
+  
+  const route = useRoute()
+  const { insideTheDiet } = route.params as RouteParams;
 
   function handleNavigationToHome() {
     navigation.navigate("home")

@@ -7,7 +7,7 @@ type Props = {
   description: string
 }
 
-const BASE_VALUE = 60; //60%
+const BASE_VALUE = 50; //50%
 
 export function PercentHeader({value, description}: Props) {
   const navigation = useNavigation()
@@ -17,6 +17,16 @@ export function PercentHeader({value, description}: Props) {
   function handleGoBack() {
     navigation.navigate("home")
   }
+
+  var option = {
+    style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  };
+
+  var formatter = new Intl.NumberFormat("pt-BR", option);
+
+  const valuePercent = formatter.format(value/100)
 
   return (
     <Container
@@ -28,7 +38,7 @@ export function PercentHeader({value, description}: Props) {
       />
 
       <Value>
-        {value}%
+        {valuePercent}
       </Value>
 
       <Description>
