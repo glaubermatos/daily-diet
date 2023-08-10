@@ -1,3 +1,4 @@
+import { ScrollView } from "react-native";
 import { styled } from "styled-components/native";
 
 export const Container = styled.View`
@@ -6,7 +7,12 @@ export const Container = styled.View`
   background-color: ${({theme}) => theme.COLORS.WHITE};
 `;
 
-export const Content = styled.View`
+export const Content = styled(ScrollView).attrs(() => ({
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
+  showsVerticalScrollIndicator: false
+}))`
   flex: 1;
 
   background-color: ${({theme}) => theme.COLORS.WHITE};
